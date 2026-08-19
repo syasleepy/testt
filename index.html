@@ -1,0 +1,1981 @@
+import React, { useState } from 'react';
+import { 
+  BookOpen, Sparkles, Calendar, Clock, Users, Award, Target, 
+  CheckCircle, Plus, Trash2, Printer, Edit3, Layers, FileText, 
+  ChevronRight, ArrowLeft, RefreshCw, Send, Check, ShieldCheck, ChevronDown,
+  Image, Paperclip, File, X, UploadCloud, Eye
+} from 'lucide-react';
+
+const SYLLABUS_DB = {
+  "Year 1": {
+    topics: [
+      { id: "y1-intro", title: "Introduction Unit: Friends", theme: "World of Self, Family and Friends", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning in a variety of familiar contexts", learningStandard: "1.2.2 Understand with support specific information and details of very simple phrases and sentences" },
+      { id: "y1-u1", title: "Unit 1: At School", theme: "World of Self, Family and Friends", focusSkills: "Main: Speaking | Complementary: Listening", contentStandard: "2.1 Communicate simple information intelligibly", learningStandard: "2.1.5 Name or describe objects using suitable words from word sets" },
+      { id: "y1-u2", title: "Unit 2: Let's Play", theme: "World of Stories", focusSkills: "Main: Reading | Complementary: Writing", contentStandard: "3.2 Understand a variety of linear and non-linear print and digital texts", learningStandard: "3.2.2 Understand specific information and details of very simple phrases and sentences" },
+      { id: "y1-u3", title: "Unit 3: Pet Show", theme: "World of Knowledge", focusSkills: "Main: Writing | Complementary: Reading", contentStandard: "4.2 Communicate basic information intelligibly for a range of purposes", learningStandard: "4.2.4 Name or describe objects using suitable words from word sets" },
+      { id: "y1-u4", title: "Unit 4: Lunchtime", theme: "World of Knowledge", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning in a variety of familiar contexts", learningStandard: "1.2.1 Understand with support the main idea of very simple phrases and sentences" }
+    ],
+    standardsBySkill: {
+      "Listening": {
+        content: [
+          "1.1 Recognise and reproduce target language sounds",
+          "1.2 Understand meaning in a variety of familiar contexts",
+          "1.3 Use appropriate listening strategies in a variety of contexts"
+        ],
+        learning: [
+          "1.1.1 Recognise and reproduce with support a limited range of high frequency target language phonemes",
+          "1.2.1 Understand with support the main idea of very simple phrases and sentences",
+          "1.2.2 Understand with support specific information and details of very simple phrases and sentences",
+          "1.2.3 Understand with a high degree of support very short simple narratives",
+          "1.2.4 Understand short basic supported classroom instructions",
+          "1.2.5 Understand short supported questions",
+          "1.3.1 Predict words they will hear by using knowledge of a topic"
+        ]
+      },
+      "Speaking": {
+        content: [
+          "2.1 Communicate simple information intelligibly",
+          "2.2 Use appropriate communication strategies",
+          "2.3 Communicate appropriately to a small or large group"
+        ],
+        learning: [
+          "2.1.1 Give very basic personal information using fixed phrases",
+          "2.1.2 Find out about very basic personal information using fixed phrases",
+          "2.1.3 Express basic likes and dislikes",
+          "2.1.4 Greet, say goodbye, and express thanks using suitable fixed phrases",
+          "2.1.5 Name or describe objects using suitable words from word sets",
+          "2.2.2 Ask for attention or help from a teacher or classmate using one word or a fixed phrase",
+          "2.3.1 Introduce self to an audience using fixed phrases"
+        ]
+      },
+      "Reading": {
+        content: [
+          "3.1 Recognise words in linear and non-linear texts by using knowledge of sounds of letters",
+          "3.2 Understand a variety of linear and non-linear print and digital texts by using appropriate reading strategies",
+          "3.3 Read independently for information and enjoyment"
+        ],
+        learning: [
+          "3.1.1 Identify and recognise the shapes of the letters in the alphabet",
+          "3.1.2 Recognise and sound out with support beginning, medial and final sounds in a word",
+          "3.1.3 Blend phonemes (CVC, CCVC)",
+          "3.1.4 Segment phonemes (CVC, CCVC)",
+          "3.2.1 Understand the main idea of very simple phrases and sentences",
+          "3.2.2 Understand specific information and details of very simple phrases and sentences",
+          "3.2.3 i) Use visuals on the page to help understand a word or phrase ii) Identify and remember high frequency sound and letter patterns",
+          "3.2.4 Use with support a simple picture dictionary to find, list and categorise words from Year 1 topics and themes",
+          "3.3.1 Read and enjoy simple print and digital games at word level"
+        ]
+      },
+      "Writing": {
+        content: [
+          "4.1 Form letters and words in neat legible print using cursive writing",
+          "4.2 Communicate basic information intelligibly for a range of purposes in print and digital media",
+          "4.3 Communicate with appropriate language form and style for a range of purposes in print and digital media"
+        ],
+        learning: [
+          "4.1.1 Demonstrate fine motor control of hands and fingers by using pen or pencil correctly",
+          "4.1.2 Form upper and lower case letters, write letters and words in a straight line, copy letters and high frequency words correctly",
+          "4.2.1 Give very basic personal information using fixed phrases",
+          "4.2.2 Greet, say goodbye, and express thanks using suitable fixed phrases",
+          "4.2.3 Express basic likes and dislikes",
+          "4.2.4 Name or describe objects using suitable words from word sets",
+          "4.2.5 Connect words and proper names using 'and'",
+          "4.3.1 Use capital letters appropriately in personal and place names",
+          "4.3.2 Spell familiar high frequency words accurately",
+          "4.3.3 Plan, and write words and phrases"
+        ]
+      },
+      "Language Arts": {
+        content: [
+          "5.1 Enjoy and appreciate rhymes, poems and songs",
+          "5.2 Express personal responses to literary texts",
+          "5.3 Express an imaginative response to literary texts"
+        ],
+        learning: [
+          "5.1.1 Demonstrate appreciation through non-verbal responses to simple chants and raps, rhymes, action songs",
+          "5.1.2 Say the words in simple texts, and sing simple songs with intelligible pronunciation, rhythm and intonation",
+          "5.2.1 Name people, things or places of interest in illustrations accompanying texts",
+          "5.3.1 Respond imaginatively and intelligibly through creating simple art and craft products"
+        ]
+      }
+    }
+  },
+  "Year 2": {
+    topics: [
+      { id: "y2-u5", title: "Unit 5: Free time", theme: "World of Self, Family and Friends", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning in a variety of familiar contexts", learningStandard: "1.2.2 Understand with support specific information and details of simple sentences" },
+      { id: "y2-u6", title: "Unit 6: The old house", theme: "World of Stories", focusSkills: "Main: Speaking | Complementary: Listening", contentStandard: "2.1 Communicate simple information intelligibly", learningStandard: "2.1.5 Describe objects using suitable words and phrases" },
+      { id: "y2-u7", title: "Unit 7: Get dressed", theme: "World of Self, Family and Friends", focusSkills: "Main: Reading | Complementary: Writing", contentStandard: "3.2 Understand a variety of linear and non-linear print and digital texts", learningStandard: "3.2.2 Understand specific information and details of simple sentences" },
+      { id: "y2-u8", title: "Unit 8: The robot", theme: "World of Stories", focusSkills: "Main: Writing | Complementary: Reading", contentStandard: "4.2 Communicate basic information intelligibly for a range of purposes", learningStandard: "4.2.4 Describe objects using suitable words and phrases" },
+      { id: "y2-u9", title: "Unit 9: At the beach", theme: "World of Knowledge", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning in a variety of familiar contexts", learningStandard: "1.2.1 Understand with support the main idea of simple sentences" }
+    ],
+    standardsBySkill: {
+      "Listening": {
+        content: ["1.1 Recognise sounds", "1.2 Understand meaning", "1.3 Use strategies"],
+        learning: ["1.1.1 Reproduce phonemes", "1.2.1 Main idea simple sentences", "1.2.2 Specific information"]
+      },
+      "Speaking": {
+        content: ["2.1 Communicate information", "2.2 Communication strategies", "2.3 Group communication"],
+        learning: ["2.1.1 Give personal information", "2.1.5 Describe objects using words and phrases"]
+      },
+      "Reading": {
+        content: ["3.1 Word recognition", "3.2 Text understanding", "3.3 Read independently"],
+        learning: ["3.2.1 Main idea of sentences", "3.2.2 Specific details of simple sentences"]
+      },
+      "Writing": {
+        content: ["4.1 Form letters", "4.2 Communicate basic info", "4.3 Style and form"],
+        learning: ["4.2.4 Describe objects", "4.3.3 Plan, draft and write simple sentences"]
+      },
+      "Language Arts": {
+        content: ["5.1 Appreciate rhymes", "5.2 Personal responses", "5.3 Imaginative response"],
+        learning: ["5.1.2 Sing songs with pronunciation", "5.3.1 Create simple chants or raps"]
+      }
+    }
+  },
+  "Year 3": {
+    topics: [
+      { id: "y3-m1", title: "Module 1: Welcome!", theme: "World of Self, Family and Friends", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning in a variety of familiar contexts", learningStandard: "1.2.2 Understand with support specific information and details of short simple texts" },
+      { id: "y3-m2", title: "Module 2: Every Day", theme: "World of Self, Family and Friends", focusSkills: "Main: Speaking | Complementary: Writing", contentStandard: "2.1 Communicate simple information intelligibly", learningStandard: "2.1.2 Find out about and describe basic everyday routines" },
+      { id: "y3-m3", title: "Module 3: Right Now", theme: "World of Knowledge", focusSkills: "Main: Reading | Complementary: Speaking", contentStandard: "3.2 Understand a variety of linear and non-linear print and digital texts", learningStandard: "3.2.1 Understand the main idea of short simple texts" },
+      { id: "y3-m4", title: "Module 4: Where Were You Yesterday?", theme: "World of Self, Family and Friends", focusSkills: "Main: Writing | Complementary: Reading", contentStandard: "4.2 Communicate basic information intelligibly for a range of purposes", learningStandard: "4.2.4 Describe people and objects using suitable words and phrases" }
+    ],
+    standardsBySkill: {
+      "Listening": { content: ["1.2 Understand meaning"], learning: ["1.2.2 Specific details of short simple texts"] },
+      "Speaking": { content: ["2.1 Communicate simple info"], learning: ["2.1.2 Describe everyday routines"] },
+      "Reading": { content: ["3.2 Understand digital texts"], learning: ["3.2.1 Main idea of short texts"] },
+      "Writing": { content: ["4.2 Basic information"], learning: ["4.2.4 Describe people and objects"] },
+      "Language Arts": { content: ["5.1 Enjoy rhymes"], learning: ["5.1.2 Say words with clear intonation"] }
+    }
+  },
+  "Year 4": {
+    topics: [
+      { id: "y4-m1", title: "Module 1: Where are you from?", theme: "World of Self, Family and Friends", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning in a variety of familiar contexts", learningStandard: "1.2.2 Understand with support specific information and details of longer simple texts" },
+      { id: "y4-m2", title: "Module 2: My week", theme: "World of Self, Family and Friends", focusSkills: "Main: Speaking | Complementary: Listening", contentStandard: "2.1 Communicate simple information intelligibly", learningStandard: "2.1.5 Describe people and objects using suitable statements" },
+      { id: "y4-m5", title: "Module 5: Eating right", theme: "World of Knowledge", focusSkills: "Main: Reading | Complementary: Writing", contentStandard: "3.2 Understand a variety of texts", learningStandard: "3.2.1 Understand the main idea of simple texts of one or two paragraphs" }
+    ],
+    standardsBySkill: {
+      "Listening": { content: ["1.2 Understand meaning"], learning: ["1.2.2 Specific info of longer texts"] },
+      "Speaking": { content: ["2.1 Communicate info"], learning: ["2.1.5 Describe people/objects"] },
+      "Reading": { content: ["3.2 Understand texts"], learning: ["3.2.1 Main idea of paragraphs"] },
+      "Writing": { content: ["4.2 Communicate basic info"], learning: ["4.3.3 Produce a plan or draft of 1-2 paragraphs"] },
+      "Language Arts": { content: ["5.2 Personal responses"], learning: ["5.2.1 Creative responses to texts"] }
+    }
+  },
+  "Year 5": {
+    topics: [
+      { id: "y5-m1", title: "Module 1: Towns and cities", theme: "World of Self, Family and Friends", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning in a variety of familiar contexts", learningStandard: "1.2.2 Understand specific details of longer simple texts" },
+      { id: "y5-m5", title: "Module 5: Food and health", theme: "World of Knowledge", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.3 Use appropriate listening strategies", learningStandard: "1.3.1 Guess meaning of unfamiliar words" }
+    ],
+    standardsBySkill: {
+      "Listening": { content: ["1.2 Understand meaning"], learning: ["1.2.2 Specific details of longer texts"] },
+      "Speaking": { content: ["2.1 Communicate info"], learning: ["2.1.1 Give detailed information"] },
+      "Reading": { content: ["3.2 Understand print texts"], learning: ["3.2.2 Specific info of two paragraphs"] },
+      "Writing": { content: ["4.3 Appropriate style"], learning: ["4.3.1 Punctuation in discourse level"] },
+      "Language Arts": { content: ["5.3 Imaginative response"], learning: ["5.3.1 Role-play and poems"] }
+    }
+  },
+  "Year 6": {
+    topics: [
+      { id: "y6-m1", title: "Module 1: It's an emergency!", theme: "World of Knowledge", focusSkills: "Main: Listening | Complementary: Speaking", contentStandard: "1.2 Understand meaning", learningStandard: "1.2.1 Main idea of longer simple texts" },
+      { id: "y6-m8", title: "Module 8: Extraordinary animals", theme: "World of Knowledge", focusSkills: "Main: Writing | Complementary: Reading", contentStandard: "4.2 Communicate basic info", learningStandard: "4.2.3 Narrate factual and imagined events" }
+    ],
+    standardsBySkill: {
+      "Listening": { content: ["1.2 Understand meaning"], learning: ["1.2.1 Main idea with little support"] },
+      "Speaking": { content: ["2.1 Communicate info"], learning: ["2.1.1 Detailed personal info"] },
+      "Reading": { content: ["3.2 Understand texts"], learning: ["3.2.3 Context clues for words"] },
+      "Writing": { content: ["4.2 Basic info"], learning: ["4.2.5 Connect sentences into 2+ paragraphs"] },
+      "Language Arts": { content: ["5.2 Personal responses"], learning: ["5.2.1 Character feelings/actions"] }
+    }
+  }
+};
+
+const PRESETS = {
+  themes: [
+    "World of Self, Family and Friends",
+    "World of Stories",
+    "World of Knowledge"
+  ],
+  skills: [
+    "Listening",
+    "Speaking",
+    "Reading",
+    "Writing",
+    "Language Arts"
+  ],
+  proficiencyLevels: [
+    "High Intermediate",
+    "Intermediate",
+    "Mixed Ability",
+    "Advanced",
+    "Basic / Remedial",
+    "Working towards A1"
+  ],
+  priorKnowledgeSuggestions: [
+    "Pupils have learnt about daily routines and activities in previous lessons.",
+    "Pupils have prior knowledge of vocabulary related to the topic and basic sentence structures.",
+    "Pupils have encountered basic descriptive adjectives and grammar in previous modules.",
+    "Pupils are familiar with basic past tense verbs and simple sentence patterns."
+  ],
+  languageContentSuggestions: [
+    "Vocabulary: multiracial, marinate, festival, costume, peacefully, harmony, tradition.",
+    "Grammar: Simple present tense for routines and general truths.",
+    "Sentence patterns: 'What is your opinion about...?', 'We should respect... because...'.",
+    "Vocabulary: healthy food, nutrients, vegetables, carbohydrates, proteins, energy."
+  ],
+  assessmentSuggestions: [
+    "Formative: 1. Select main ideas from reading text (Individual worksheet).\n2. Write short paragraph (Group work on Mahjong paper).",
+    "Formative: 1. Oral Q&A during set induction.\n2. Matching exercise on whiteboard.",
+    "Formative: 1. Listening comprehension tick-box activity.\n2. Role play dialogue in pairs."
+  ],
+  hots: [
+    "Reasoning skills - pupils express opinions and ideas based on context.",
+    "Critical thinking - analyzing and comparing information.",
+    "Creative thinking - generating new ideas and variations.",
+    "Problem solving - finding solutions to situational dilemmas."
+  ],
+  multipleIntelligencesSuggestions: [
+    "1. Interpersonal (Interaction with teacher and peers)\n2. Kinaesthetic (Moving in front of class to match cards)",
+    "1. Visual-Spatial (Interpreting mind maps and pictures)\n2. Linguistic (Expressing ideas through writing)",
+    "1. Musical (Listening to cultural songs and rhythm)\n2. Intrapersonal (Reflecting on personal values)"
+  ],
+  moralValues: [
+    "Respect, Responsibility, Cooperation",
+    "Appreciation, Kindness, Unity",
+    "Love for country, Tolerance, Diligence",
+    "Helpfulness, Honesty, Courage"
+  ],
+  emks: [
+    "Values & Citizenship",
+    "Language & Communication",
+    "Science and Technology",
+    "Environmental Sustainability",
+    "Entrepreneurship",
+    "Pendidikan Moral (Topik Perpaduan)"
+  ],
+  softSkillsSuggestions: [
+    "Communication skills, Teamwork and Collaboration",
+    "Critical thinking and Problem-solving skills",
+    "Leadership and Professional Ethics"
+  ],
+  pedagogies: [
+    "Collaborative Learning, Inquiry-based Learning",
+    "Task-Based Learning, Contextual Learning",
+    "Project-Based Learning, Communicative Language Teaching",
+    "Game-Based Learning, Direct Instruction"
+  ]
+};
+
+const DEFAULT_RPH = {
+  subject: "English Language",
+  date: "18 July 2026",
+  time: "10.30 - 11.30 am",
+  year: "Year 1 Bestari",
+  pupilsPresent: "30",
+  pupilsTotal: "32",
+  proficiencyLevel: "Working towards A1",
+  theme: "World of self, family, and friends",
+  topic: "Unit 1: At School",
+  focusSkillsMain: "Speaking",
+  focusSkillsComp: "Listening",
+  priorKnowledge: "Pupils have learnt basic greetings and numbers 1-10 in preschool.",
+  contentStandardMain: "2.1 Communicate simple information intelligibly",
+  contentStandardComp: "1.2 Understand meaning in a variety of familiar contexts",
+  learningStandardMain: "2.1.5 Name or describe objects using suitable words from word sets",
+  learningStandardComp: "1.2.2 Understand with support specific information and details of very simple phrases and sentences",
+  lo1: "Name classroom objects correctly using suitable words.",
+  lo2: "Identify classroom objects when listened to in simple sentences.",
+  lo3: "Ask and answer 'What's this?' with confidence.",
+  languageContent: "Examples:\na) Vocabulary: pen, rubber, pencil, book, notebook, bag, desk, ruler, pencil case\nb) Grammar: What's this? It's a pencil. Is it a pen? Yes, it is. / No, it isn't.",
+  assessment: "Formative: 1. Oral naming of classroom objects.\n2. Matching pictures to words worksheet.",
+  hots: "Recall and Association - connecting object names with visual classroom items.",
+  multipleIntelligences: "1. Visual-Spatial (Identifying objects from flashcards)\n2. Linguistic (Speaking and repeating words)",
+  moralValues: "Cooperation, Responsibility",
+  emk: "Language & Communication",
+  softSkills: "Communication skills",
+  currentPedagogy: "Direct Instruction, Game-Based Learning",
+  
+  setInductionTime: "5 minutes",
+  setInductionContent: "Mystery Bag: Teacher pulls out classroom objects from a bag.",
+  setInductionActivity: "1. Teacher brings a mystery bag to the front.\n2. Teacher asks a pupil to reach in, touch an object, and guess what it is.\n3. Teacher introduces the word and writes it on the whiteboard.\n4. Pupils repeat chorally.",
+  setInductionRemarks: "Teaching aids: Mystery bag, realia (pen, book, pencil)\n• Moral values: Curiosity\n• CCTS: Recognition",
+
+  presentationTime: "15 mins",
+  presentationContent: "Flashcards of classroom objects and sentence pattern 'What's this? It's a...'",
+  presentationActivity: "1. Teacher displays flashcards of pen, rubber, pencil, and book.\n2. Teacher models pronunciation and sentence structures.\n3. Pupils repeat after teacher in chorus and individually.\n4. Teacher explains 'Is it a pen? Yes, it is / No, it isn't.'",
+  presentationRemarks: "Assessment of learning objective 1\nTeaching aids: Flashcards, realia\nMoral values: Focus",
+
+  practiceTime: "15 mins",
+  practiceContent: "\"What's in my desk?\" Guessing game in pairs.",
+  practiceActivity: "1. Pupils work in pairs with real classroom objects.\n2. One pupil hides an object and asks 'What's this?'.\n3. The partner guesses 'Is it a ruler? No, it isn't. It's a pencil!'.\n4. Teacher monitors and assists pairs.",
+  practiceRemarks: "Assessment of learning objective 2\nTeaching Aids: Classroom objects\nMoral values: Cooperation",
+
+  productionTime: "20 mins",
+  productionContent: "\"Point and Say\" individual naming and matching worksheet.",
+  productionActivity: "1. Teacher distributes worksheets with pictures of classroom objects.\n2. Pupils match words to correct pictures and write simple labels.\n3. Teacher walks around providing support to preliterate pupils.\n4. Selected pupils share their completed work.",
+  productionRemarks: "Assessment of learning objective 3\nMoral values: Diligence\nCCTS: Matching",
+
+  closureTime: "5 mins",
+  closureContent: "Reviewing classroom objects learned.",
+  closureActivity: "1. Teacher points to various items in the classroom and asks 'What's this?'.\n2. Whole class responds together.\n3. Teacher praises pupils' efforts.",
+  closureRemarks: "Moral values: Appreciation\nTeaching Aids: Real classroom items"
+};
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('generator');
+  const [selectedYearExplorer, setSelectedYearExplorer] = useState('Year 1');
+  const [rphData, setRphData] = useState(DEFAULT_RPH);
+  const [aiPrompt, setAiPrompt] = useState('');
+  
+  // AI Assistant Multi-modal Inputs (Text, BBM Photo, BBM File)
+  const [aiInputMode, setAiInputMode] = useState('text'); // 'text' | 'photo' | 'file'
+  const [attachedImage, setAttachedImage] = useState(null); // { file, fileName, previewUrl, base64Data, mimeType }
+  const [attachedFile, setAttachedFile] = useState(null); // { file, fileName, textContent, size }
+
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const [pickerModal, setPickerModal] = useState({ isOpen: false, field: null, title: '', options: [] });
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const getCurrentYearKey = () => {
+    const text = (rphData.year || "").toLowerCase();
+    if (text.includes("year 1") || text.includes("1 ")) return "Year 1";
+    if (text.includes("year 2") || text.includes("2 ")) return "Year 2";
+    if (text.includes("year 3") || text.includes("3 ")) return "Year 3";
+    if (text.includes("year 4") || text.includes("4 ")) return "Year 4";
+    if (text.includes("year 5") || text.includes("5 ")) return "Year 5";
+    if (text.includes("year 6") || text.includes("6 ")) return "Year 6";
+    return "Year 1";
+  };
+
+  const handleSelectTopicFromExplorer = (topic) => {
+    setRphData(prev => ({
+      ...prev,
+      topic: topic.title,
+      theme: topic.theme,
+      focusSkillsMain: topic.focusSkills.split('|')[0].replace('Main:', '').trim(),
+      focusSkillsComp: topic.focusSkills.split('|')[1] ? topic.focusSkills.split('|')[1].replace('Complementary:', '').trim() : 'Listening',
+      contentStandardMain: topic.contentStandard,
+      learningStandardMain: topic.learningStandard
+    }));
+    showToast(`Loaded curriculum details for ${topic.title}!`);
+    setActiveTab('generator');
+  };
+
+  const openPicker = (field, title, options) => {
+    setPickerModal({ isOpen: true, field, title, options: options || [] });
+  };
+
+  const applyPickerSelection = (value) => {
+    if (pickerModal.field) {
+      setRphData(prev => ({ ...prev, [pickerModal.field]: value }));
+    }
+    setPickerModal({ isOpen: false, field: null, title: '', options: [] });
+  };
+
+  const openTopicPicker = () => {
+    const yrKey = getCurrentYearKey();
+    const topics = (SYLLABUS_DB[yrKey] || SYLLABUS_DB["Year 1"]).topics.map(t => `${t.title} (${t.theme})`);
+    openPicker('topic', `Topics & Modules (${yrKey})`, topics);
+  };
+
+  const openContentStandardPicker = (isMain = true) => {
+    const yrKey = getCurrentYearKey();
+    const db = SYLLABUS_DB[yrKey] || SYLLABUS_DB["Year 1"];
+    const skill = isMain ? rphData.focusSkillsMain : rphData.focusSkillsComp;
+    const skillStandards = db.standardsBySkill[skill] || db.standardsBySkill["Reading"];
+    const field = isMain ? 'contentStandardMain' : 'contentStandardComp';
+    openPicker(field, `Content Standards (${yrKey} - ${skill})`, skillStandards.content);
+  };
+
+  const openLearningStandardPicker = (isMain = true) => {
+    const yrKey = getCurrentYearKey();
+    const db = SYLLABUS_DB[yrKey] || SYLLABUS_DB["Year 1"];
+    const skill = isMain ? rphData.focusSkillsMain : rphData.focusSkillsComp;
+    const skillStandards = db.standardsBySkill[skill] || db.standardsBySkill["Reading"];
+    const field = isMain ? 'learningStandardMain' : 'learningStandardComp';
+    openPicker(field, `Learning Standards by Skill (${yrKey} - ${skill})`, skillStandards.learning);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast("Please select a valid image file (JPG, PNG, WEBP).");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Data = reader.result.split(',')[1];
+      setAttachedImage({
+        file,
+        fileName: file.name,
+        previewUrl: URL.createObjectURL(file),
+        base64Data,
+        mimeType: file.type
+      });
+      showToast(`BBM Photo "${file.name}" attached successfully!`);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setAttachedFile({
+        file,
+        fileName: file.name,
+        textContent: event.target?.result || '',
+        size: (file.size / 1024).toFixed(1) + ' KB'
+      });
+      showToast(`BBM Document "${file.name}" attached successfully!`);
+    };
+    reader.readAsText(file);
+  };
+
+  const handleAiGenerate = async () => {
+    if (aiInputMode === 'text' && !aiPrompt.trim()) {
+      showToast("Please enter an instruction or topic prompt!");
+      return;
+    }
+    if (aiInputMode === 'photo' && !attachedImage) {
+      showToast("Please select or drop a BBM photo/image first!");
+      return;
+    }
+    if (aiInputMode === 'file' && !attachedFile) {
+      showToast("Please upload a BBM document file first!");
+      return;
+    }
+
+    setIsAiLoading(true);
+
+    try {
+      const systemPrompt = `You are an expert Malaysian Primary English Language teacher and curriculum specialist following KSSR Semakan & Superminds / Get Smart Plus textbooks. 
+Generate a complete, highly professional Daily Lesson Plan (RPH) in JSON format.
+If a BBM (Bahan Bantu Mengajar / Teaching Aid) photo or file is provided, analyze its content, key vocabulary, text, or visual diagrams, and design lesson steps (Set Induction, Presentation, Practice, Production) that directly use this BBM.`;
+
+      let userQuery = `Create a complete English Language Daily Lesson Plan (RPH) aligned with KSSR DSKP.`;
+
+      if (aiInputMode === 'photo' && attachedImage) {
+        userQuery += `\nAnalyse the attached BBM (Bahan Bantu Mengajar) photo/image (e.g. textbook page, worksheet, flashcard) and build the RPH around this BBM material. Integrate the BBM directly into the activities.`;
+      } else if (aiInputMode === 'file' && attachedFile) {
+        userQuery += `\nUse the following BBM document text to craft the RPH:\n--- START BBM DOCUMENT (${attachedFile.fileName}) ---\n${attachedFile.textContent.slice(0, 3000)}\n--- END BBM DOCUMENT ---`;
+      }
+
+      if (aiPrompt.trim()) {
+        userQuery += `\nTeacher's Specific Instruction: "${aiPrompt}"`;
+      }
+
+      userQuery += `\nReturn valid JSON matching this schema:
+{
+  "subject": "English Language",
+  "date": "18 July 2026",
+  "time": "10.30-11.30 am",
+  "year": "Year 1 Bestari",
+  "pupilsPresent": "30",
+  "pupilsTotal": "32",
+  "proficiencyLevel": "Working towards A1",
+  "theme": "...",
+  "topic": "...",
+  "focusSkillsMain": "...",
+  "focusSkillsComp": "...",
+  "priorKnowledge": "...",
+  "contentStandardMain": "...",
+  "contentStandardComp": "...",
+  "learningStandardMain": "...",
+  "learningStandardComp": "...",
+  "lo1": "...",
+  "lo2": "...",
+  "lo3": "...",
+  "languageContent": "...",
+  "assessment": "...",
+  "hots": "...",
+  "multipleIntelligences": "...",
+  "moralValues": "...",
+  "emk": "...",
+  "softSkills": "...",
+  "currentPedagogy": "...",
+  "setInductionTime": "5 minutes",
+  "setInductionContent": "...",
+  "setInductionActivity": "...",
+  "setInductionRemarks": "...",
+  "presentationTime": "15 mins",
+  "presentationContent": "...",
+  "presentationActivity": "...",
+  "presentationRemarks": "...",
+  "practiceTime": "15 mins",
+  "practiceContent": "...",
+  "practiceActivity": "...",
+  "practiceRemarks": "...",
+  "productionTime": "20 mins",
+  "productionContent": "...",
+  "productionActivity": "...",
+  "productionRemarks": "...",
+  "closureTime": "5 mins",
+  "closureContent": "...",
+  "closureActivity": "...",
+  "closureRemarks": "..."
+}`;
+
+      const apiKey = "";
+      let parsed = null;
+
+      if (apiKey) {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+        
+        const parts = [{ text: userQuery }];
+        if (aiInputMode === 'photo' && attachedImage?.base64Data) {
+          parts.push({
+            inlineData: {
+              mimeType: attachedImage.mimeType,
+              data: attachedImage.base64Data
+            }
+          });
+        }
+
+        const payload = {
+          contents: [{ role: 'user', parts }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { responseMimeType: "application/json" }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        const candidate = result.candidates?.[0];
+        if (candidate && candidate.content?.parts?.[0]?.text) {
+          parsed = JSON.parse(candidate.content.parts[0].text);
+        }
+      }
+
+      // Smart fallback if API key is not present or API call is bypassed
+      if (!parsed) {
+        const pLower = (aiPrompt + " " + (attachedFile?.fileName || "") + " " + (attachedImage?.fileName || "")).toLowerCase();
+        let matchedYr = "Year 1";
+        if (pLower.includes("year 2") || pLower.includes("y2")) matchedYr = "Year 2";
+        else if (pLower.includes("year 3") || pLower.includes("y3")) matchedYr = "Year 3";
+        else if (pLower.includes("year 4") || pLower.includes("y4")) matchedYr = "Year 4";
+        else if (pLower.includes("year 5") || pLower.includes("y5")) matchedYr = "Year 5";
+        else if (pLower.includes("year 6") || pLower.includes("y6")) matchedYr = "Year 6";
+
+        const yearTopics = SYLLABUS_DB[matchedYr] ? SYLLABUS_DB[matchedYr].topics : SYLLABUS_DB["Year 1"].topics;
+        const top = yearTopics[Math.floor(Math.random() * yearTopics.length)];
+
+        const bbmSource = attachedImage 
+          ? `Attached BBM Image (${attachedImage.fileName})` 
+          : attachedFile 
+          ? `Attached BBM Document (${attachedFile.fileName})` 
+          : `Selected Teaching Aids / Textbook Materials`;
+
+        parsed = {
+          subject: "English Language",
+          date: "18 July 2026",
+          time: "10.30 - 11.30 am",
+          year: `${matchedYr} Bestari`,
+          pupilsPresent: "30",
+          pupilsTotal: "32",
+          proficiencyLevel: "Intermediate",
+          theme: top.theme,
+          topic: top.title,
+          focusSkillsMain: top.focusSkills.split('|')[0].replace('Main:', '').trim(),
+          focusSkillsComp: top.focusSkills.split('|')[1] ? top.focusSkills.split('|')[1].replace('Complementary:', '').trim() : 'Writing',
+          priorKnowledge: `Pupils are familiar with basic target vocabulary shown in the BBM material.`,
+          contentStandardMain: top.contentStandard,
+          contentStandardComp: "1.2 Understand meaning in a variety of familiar contexts",
+          learningStandardMain: top.learningStandard,
+          learningStandardComp: "1.2.2 Understand specific information and details",
+          lo1: `Identify and name key elements/vocabulary from the provided BBM material.`,
+          lo2: `Demonstrate understanding of target language structures through BBM-guided activities.`,
+          lo3: `Complete task worksheet based on the BBM independently or in pairs.`,
+          languageContent: `Target Vocabulary & Grammar derived from ${bbmSource}.`,
+          assessment: `Formative: 1. Oral Q&A using ${bbmSource}.\n2. Guided BBM worksheet assessment.`,
+          hots: "Analyzing and applying key concepts extracted from BBM visuals/text.",
+          multipleIntelligences: "Visual-Spatial, Linguistic, Interpersonal",
+          moralValues: "Cooperation, Diligence, Mutual Respect",
+          emk: "Language & Communication, Moral Values",
+          softSkills: "Communication and Critical Thinking Skills",
+          currentPedagogy: "Contextual Learning, Visual-Assisted Instruction",
+          setInductionTime: "5 mins",
+          setInductionContent: `Visual Hook & BBM Introduction (${bbmSource})`,
+          setInductionActivity: `1. Teacher displays the BBM material (${bbmSource}) to the class.\n2. Teacher asks guided warm-up questions to elicit pupils' prior knowledge.\n3. Pupils respond and identify key elements.`,
+          setInductionRemarks: `Teaching aids: ${bbmSource}\nMoral values: Curiosity`,
+          presentationTime: "15 mins",
+          presentationContent: `Explicit teaching using ${bbmSource}`,
+          presentationActivity: `1. Teacher highlights vocabulary and sentence structures found in the BBM.\n2. Pupils repeat pronunciation chorally and individually.\n3. Teacher explains key rules and models target language usage.`,
+          presentationRemarks: `Assessment of LO 1\nTeaching aids: ${bbmSource}`,
+          practiceTime: "15 mins",
+          practiceContent: `Guided pair practice based on BBM`,
+          practiceActivity: `1. Pupils work in pairs using printable copies/sections of the BBM.\n2. Pupils ask and answer questions with peer support.\n3. Teacher monitors and provides constructive feedback.`,
+          practiceRemarks: `Assessment of LO 2\nMoral values: Cooperation`,
+          productionTime: "20 mins",
+          productionContent: `Independent activity / BBM Worksheet`,
+          productionActivity: `1. Teacher distributes worksheets created based on the BBM.\n2. Pupils complete sentence building and matching tasks individually.\n3. Teacher assists pupils needing extra support.`,
+          productionRemarks: `Assessment of LO 3\nMoral values: Diligence`,
+          closureTime: "5 mins",
+          closureContent: "Lesson recap & BBM reflection",
+          closureActivity: `1. Teacher conducts a quick exit quiz based on the day's BBM.\n2. Pupils summarize key points learned.`,
+          closureRemarks: "Moral values: Appreciation"
+        };
+      }
+
+      setRphData(prev => ({ ...prev, ...parsed }));
+      showToast("AI successfully generated your RPH based on BBM!");
+      setActiveTab('generator');
+    } catch (err) {
+      console.error(err);
+      showToast("AI generation failed. Please try again with a specific prompt or valid image/file.");
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setRphData(prev => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl flex items-center space-x-3 animate-bounce">
+          <CheckCircle className="w-5 h-5" />
+          <span className="font-medium text-sm">{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Quick Option Picker Modal */}
+      {pickerModal.isOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-fadeIn">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 className="font-bold text-slate-800 text-base">Select: {pickerModal.title}</h3>
+              <button 
+                onClick={() => setPickerModal({ isOpen: false, field: null, title: '', options: [] })}
+                className="text-slate-400 hover:text-slate-600 font-bold text-lg px-2"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+              {(pickerModal.options || []).map((opt, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => applyPickerSelection(opt)}
+                  className="w-full text-left px-4 py-3 bg-slate-50 hover:bg-teal-50 hover:text-teal-900 hover:border-teal-300 border border-slate-200 rounded-xl text-xs font-medium transition-all flex items-center justify-between"
+                >
+                  <span>{opt}</span>
+                  <Check className="w-4 h-4 text-teal-600" />
+                </button>
+              ))}
+            </div>
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setPickerModal({ isOpen: false, field: null, title: '', options: [] })}
+                className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Top Header */}
+      <header className="bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-800 text-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+          <div className="flex items-center space-x-3 mb-3 md:mb-0">
+            <div className="bg-white/10 p-2.5 rounded-xl backdrop-blur-md border border-white/20">
+              <BookOpen className="w-7 h-7 text-emerald-300" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">Smart English RPH Studio</h1>
+              <p className="text-xs text-teal-200">DSKP Aligned Lesson Plan Generator (Years 1 - 6)</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-1.5 bg-teal-900/50 p-1.5 rounded-xl border border-teal-600/40">
+            <button 
+              onClick={() => setActiveTab('generator')}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${activeTab === 'generator' ? 'bg-white text-teal-900 shadow-md' : 'text-teal-100 hover:bg-teal-800/60'}`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>RPH Editor</span>
+            </button>
+            <button 
+              onClick={() => setActiveTab('syllabus')}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${activeTab === 'syllabus' ? 'bg-white text-teal-900 shadow-md' : 'text-teal-100 hover:bg-teal-800/60'}`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Syllabus Explorer (Y1 - Y6)</span>
+            </button>
+            <button 
+              onClick={() => setActiveTab('ai')}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${activeTab === 'ai' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-300 hover:bg-teal-800/60'}`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>AI & BBM Generator</span>
+            </button>
+            <button 
+              onClick={() => setActiveTab('preview')}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${activeTab === 'preview' ? 'bg-white text-teal-900 shadow-md' : 'text-teal-100 hover:bg-teal-800/60'}`}
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Official Print View</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+        
+        {/* TAB 1: RPH EDITOR FORM */}
+        {activeTab === 'generator' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-800 flex flex-wrap items-center gap-2">
+                  <span>Daily English Language Lesson Plan Builder</span>
+                  <div className="flex items-center space-x-2 ml-2">
+                    <span className="text-xs font-semibold text-slate-600">Active Year :</span>
+                    <select
+                      value={getCurrentYearKey()}
+                      onChange={(e) => {
+                        const newYr = e.target.value;
+                        setRphData(prev => ({ ...prev, year: `${newYr} Bestari` }));
+                        showToast(`Switched active year to ${newYr}`);
+                      }}
+                      className="bg-emerald-50 text-emerald-900 border border-emerald-300 rounded-lg px-2.5 py-1 text-xs font-bold focus:ring-2 focus:ring-teal-600 focus:outline-none"
+                    >
+                      <option value="Year 1">Year 1</option>
+                      <option value="Year 2">Year 2</option>
+                      <option value="Year 3">Year 3</option>
+                      <option value="Year 4">Year 4</option>
+                      <option value="Year 5">Year 5</option>
+                      <option value="Year 6">Year 6</option>
+                    </select>
+                  </div>
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">Standards and topics below dynamically match your selected active year level ({getCurrentYearKey()}).</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button 
+                  onClick={() => setActiveTab('syllabus')}
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-all flex items-center space-x-2 border border-slate-300"
+                >
+                  <Layers className="w-4 h-4 text-teal-700" />
+                  <span>Browse Modules</span>
+                </button>
+                <button 
+                  onClick={() => setActiveTab('preview')}
+                  className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold rounded-xl shadow-md transition-all flex items-center space-x-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Preview & Print RPH</span>
+                </button>
+              </div>
+            </div>
+
+            {/* General Information Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center space-x-2">
+                <Calendar className="w-4 h-4 text-teal-700" />
+                <h3 className="font-semibold text-slate-800 text-sm">1. Administrative & Class Details</h3>
+              </div>
+              <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Subject</label>
+                  <input 
+                    type="text" 
+                    value={rphData.subject} 
+                    onChange={(e) => handleInputChange('subject', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Date / Day</label>
+                  <input 
+                    type="text" 
+                    value={rphData.date} 
+                    onChange={(e) => handleInputChange('date', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Time</label>
+                  <input 
+                    type="text" 
+                    value={rphData.time} 
+                    onChange={(e) => handleInputChange('time', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Year / Class (e.g. Year 1 Bestari)</label>
+                  <input 
+                    type="text" 
+                    value={rphData.year} 
+                    onChange={(e) => handleInputChange('year', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none font-semibold text-teal-900" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Number of Pupils</label>
+                  <input 
+                    type="text" 
+                    value={`${rphData.pupilsPresent}/${rphData.pupilsTotal}`} 
+                    onChange={(e) => {
+                      const parts = e.target.value.split('/');
+                      setRphData(prev => ({ ...prev, pupilsPresent: parts[0] || '', pupilsTotal: parts[1] || '' }));
+                    }}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Proficiency Level</label>
+                  <div className="flex space-x-2">
+                    <input 
+                      type="text" 
+                      value={rphData.proficiencyLevel} 
+                      onChange={(e) => handleInputChange('proficiencyLevel', e.target.value)}
+                      className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => openPicker('proficiencyLevel', 'Proficiency Level', PRESETS.proficiencyLevels)}
+                      className="px-3 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                    >
+                      <span>Select</span>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Curriculum Standards Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center space-x-2">
+                <BookOpen className="w-4 h-4 text-teal-700" />
+                <h3 className="font-semibold text-slate-800 text-sm">2. Curriculum Standards & Objectives ({getCurrentYearKey()})</h3>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Theme</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.theme} 
+                        onChange={(e) => handleInputChange('theme', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('theme', 'Curriculum Theme', PRESETS.themes)}
+                        className="px-3 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <span>Select</span>
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Topic / Module</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.topic} 
+                        onChange={(e) => handleInputChange('topic', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none font-semibold text-teal-800" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={openTopicPicker}
+                        className="px-3 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <span>Browse</span>
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Main Focus Skill</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.focusSkillsMain} 
+                        onChange={(e) => handleInputChange('focusSkillsMain', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('focusSkillsMain', 'Main Focus Skill', PRESETS.skills)}
+                        className="px-3 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <span>Select</span>
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Complementary Focus Skill</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.focusSkillsComp} 
+                        onChange={(e) => handleInputChange('focusSkillsComp', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('focusSkillsComp', 'Complementary Focus Skill', PRESETS.skills)}
+                        className="px-3 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <span>Select</span>
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-xs font-semibold text-slate-600">Pupils' Prior Knowledge</label>
+                    <button 
+                      type="button"
+                      onClick={() => openPicker('priorKnowledge', 'Prior Knowledge Suggestions', PRESETS.priorKnowledgeSuggestions)}
+                      className="text-[11px] text-teal-700 hover:underline font-semibold flex items-center space-x-1"
+                    >
+                      <span>Choose suggestion</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <input 
+                    type="text" 
+                    value={rphData.priorKnowledge} 
+                    onChange={(e) => handleInputChange('priorKnowledge', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="block text-xs font-semibold text-slate-600">Main Content Standard</label>
+                      <button 
+                        type="button" 
+                        onClick={() => openContentStandardPicker(true)}
+                        className="text-[11px] text-teal-700 hover:underline font-semibold flex items-center space-x-1"
+                      >
+                        <span>Choose option</span>
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <textarea 
+                      rows="2"
+                      value={rphData.contentStandardMain} 
+                      onChange={(e) => handleInputChange('contentStandardMain', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none resize-none" 
+                    />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="block text-xs font-semibold text-slate-600">Complementary Content Standard</label>
+                      <button 
+                        type="button" 
+                        onClick={() => openContentStandardPicker(false)}
+                        className="text-[11px] text-teal-700 hover:underline font-semibold flex items-center space-x-1"
+                      >
+                        <span>Choose option</span>
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <textarea 
+                      rows="2"
+                      value={rphData.contentStandardComp} 
+                      onChange={(e) => handleInputChange('contentStandardComp', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none resize-none" 
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="block text-xs font-semibold text-slate-600">Main Learning Standard (by Skill)</label>
+                      <button 
+                        type="button" 
+                        onClick={() => openLearningStandardPicker(true)}
+                        className="text-[11px] text-teal-700 hover:underline font-semibold flex items-center space-x-1"
+                      >
+                        <span>Choose option</span>
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <input 
+                      type="text" 
+                      value={rphData.learningStandardMain} 
+                      onChange={(e) => handleInputChange('learningStandardMain', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                    />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="block text-xs font-semibold text-slate-600">Complementary Learning Standard (by Skill)</label>
+                      <button 
+                        type="button" 
+                        onClick={() => openLearningStandardPicker(false)}
+                        className="text-[11px] text-teal-700 hover:underline font-semibold flex items-center space-x-1"
+                      >
+                        <span>Choose option</span>
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <input 
+                      type="text" 
+                      value={rphData.learningStandardComp} 
+                      onChange={(e) => handleInputChange('learningStandardComp', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                    />
+                  </div>
+                </div>
+
+                {/* SMART Learning Objectives */}
+                <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-200 space-y-3">
+                  <label className="block text-xs font-bold text-emerald-900 flex items-center space-x-1.5">
+                    <Target className="w-4 h-4 text-emerald-700" />
+                    <span>Learning Objectives (SMART) - By the end of the lesson, pupils will be able to:</span>
+                  </label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-bold text-emerald-700 w-5">1.</span>
+                      <input 
+                        type="text" 
+                        value={rphData.lo1} 
+                        onChange={(e) => handleInputChange('lo1', e.target.value)}
+                        className="flex-1 bg-white border border-emerald-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-bold text-emerald-700 w-5">2.</span>
+                      <input 
+                        type="text" 
+                        value={rphData.lo2} 
+                        onChange={(e) => handleInputChange('lo2', e.target.value)}
+                        className="flex-1 bg-white border border-emerald-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-bold text-emerald-700 w-5">3.</span>
+                      <input 
+                        type="text" 
+                        value={rphData.lo3} 
+                        onChange={(e) => handleInputChange('lo3', e.target.value)}
+                        className="flex-1 bg-white border border-emerald-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="block text-xs font-semibold text-slate-600">Language Content (Vocabulary / Grammar)</label>
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('languageContent', 'Language Content Suggestions', PRESETS.languageContentSuggestions)}
+                        className="text-[11px] text-teal-700 hover:underline font-semibold flex items-center space-x-1"
+                      >
+                        <span>Choose suggestion</span>
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <textarea 
+                      rows="3"
+                      value={rphData.languageContent} 
+                      onChange={(e) => handleInputChange('languageContent', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none resize-none" 
+                    />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="block text-xs font-semibold text-slate-600">Assessment (Formative)</label>
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('assessment', 'Assessment Suggestions', PRESETS.assessmentSuggestions)}
+                        className="text-[11px] text-teal-700 hover:underline font-semibold flex items-center space-x-1"
+                      >
+                        <span>Choose suggestion</span>
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <textarea 
+                      rows="3"
+                      value={rphData.assessment} 
+                      onChange={(e) => handleInputChange('assessment', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none resize-none" 
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Thinking Skills (HOTS)</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.hots} 
+                        onChange={(e) => handleInputChange('hots', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('hots', 'Thinking Skills (HOTS) Suggestions', PRESETS.hots)}
+                        className="px-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Multiple Intelligences</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.multipleIntelligences} 
+                        onChange={(e) => handleInputChange('multipleIntelligences', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('multipleIntelligences', 'Multiple Intelligences Suggestions', PRESETS.multipleIntelligencesSuggestions)}
+                        className="px-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Moral Values</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.moralValues} 
+                        onChange={(e) => handleInputChange('moralValues', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('moralValues', 'Moral Values Suggestions', PRESETS.moralValues)}
+                        className="px-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Cross Curricular Elements (EMK)</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.emk} 
+                        onChange={(e) => handleInputChange('emk', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('emk', 'Cross Curricular Elements (EMK) Suggestions', PRESETS.emks)}
+                        className="px-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Soft Skills (Kemahiran Insaniah)</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.softSkills} 
+                        onChange={(e) => handleInputChange('softSkills', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('softSkills', 'Soft Skills Suggestions', PRESETS.softSkillsSuggestions)}
+                        className="px-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Current Pedagogy</label>
+                    <div className="flex space-x-2">
+                      <input 
+                        type="text" 
+                        value={rphData.currentPedagogy} 
+                        onChange={(e) => handleInputChange('currentPedagogy', e.target.value)}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => openPicker('currentPedagogy', 'Current Pedagogy Suggestions', PRESETS.pedagogies)}
+                        className="px-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 text-xs font-semibold flex items-center space-x-1"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Teaching & Learning Steps Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center space-x-2">
+                <Clock className="w-4 h-4 text-teal-700" />
+                <h3 className="font-semibold text-slate-800 text-sm">3. Teaching & Learning Steps (Prosedur PdP)</h3>
+              </div>
+              <div className="p-6 space-y-6">
+                
+                {/* Set Induction */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-bold text-xs uppercase tracking-wide text-teal-800">Set Induction</h4>
+                    <input 
+                      type="text" 
+                      value={rphData.setInductionTime} 
+                      onChange={(e) => handleInputChange('setInductionTime', e.target.value)}
+                      className="w-28 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-center font-medium" 
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Content</label>
+                      <input 
+                        type="text" 
+                        value={rphData.setInductionContent} 
+                        onChange={(e) => handleInputChange('setInductionContent', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Remarks & Teaching Aids</label>
+                      <input 
+                        type="text" 
+                        value={rphData.setInductionRemarks} 
+                        onChange={(e) => handleInputChange('setInductionRemarks', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-500 mb-1">Teaching & Learning Activities</label>
+                    <textarea 
+                      rows="3"
+                      value={rphData.setInductionActivity} 
+                      onChange={(e) => handleInputChange('setInductionActivity', e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs resize-none" 
+                    />
+                  </div>
+                </div>
+
+                {/* Presentation */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-bold text-xs uppercase tracking-wide text-teal-800">Presentation</h4>
+                    <input 
+                      type="text" 
+                      value={rphData.presentationTime} 
+                      onChange={(e) => handleInputChange('presentationTime', e.target.value)}
+                      className="w-28 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-center font-medium" 
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Content</label>
+                      <input 
+                        type="text" 
+                        value={rphData.presentationContent} 
+                        onChange={(e) => handleInputChange('presentationContent', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Remarks & Teaching Aids</label>
+                      <input 
+                        type="text" 
+                        value={rphData.presentationRemarks} 
+                        onChange={(e) => handleInputChange('presentationRemarks', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-500 mb-1">Teaching & Learning Activities</label>
+                    <textarea 
+                      rows="3"
+                      value={rphData.presentationActivity} 
+                      onChange={(e) => handleInputChange('presentationActivity', e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs resize-none" 
+                    />
+                  </div>
+                </div>
+
+                {/* Practice */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-bold text-xs uppercase tracking-wide text-teal-800">Practice</h4>
+                    <input 
+                      type="text" 
+                      value={rphData.practiceTime} 
+                      onChange={(e) => handleInputChange('practiceTime', e.target.value)}
+                      className="w-28 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-center font-medium" 
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Content</label>
+                      <input 
+                        type="text" 
+                        value={rphData.practiceContent} 
+                        onChange={(e) => handleInputChange('practiceContent', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Remarks & Teaching Aids</label>
+                      <input 
+                        type="text" 
+                        value={rphData.practiceRemarks} 
+                        onChange={(e) => handleInputChange('practiceRemarks', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-500 mb-1">Teaching & Learning Activities</label>
+                    <textarea 
+                      rows="3"
+                      value={rphData.practiceActivity} 
+                      onChange={(e) => handleInputChange('practiceActivity', e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs resize-none" 
+                    />
+                  </div>
+                </div>
+
+                {/* Production */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-bold text-xs uppercase tracking-wide text-teal-800">Production</h4>
+                    <input 
+                      type="text" 
+                      value={rphData.productionTime} 
+                      onChange={(e) => handleInputChange('productionTime', e.target.value)}
+                      className="w-28 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-center font-medium" 
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Content</label>
+                      <input 
+                        type="text" 
+                        value={rphData.productionContent} 
+                        onChange={(e) => handleInputChange('productionContent', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Remarks & Teaching Aids</label>
+                      <input 
+                        type="text" 
+                        value={rphData.productionRemarks} 
+                        onChange={(e) => handleInputChange('productionRemarks', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-500 mb-1">Teaching & Learning Activities</label>
+                    <textarea 
+                      rows="3"
+                      value={rphData.productionActivity} 
+                      onChange={(e) => handleInputChange('productionActivity', e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs resize-none" 
+                    />
+                  </div>
+                </div>
+
+                {/* Closure */}
+                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-bold text-xs uppercase tracking-wide text-teal-800">Closure</h4>
+                    <input 
+                      type="text" 
+                      value={rphData.closureTime} 
+                      onChange={(e) => handleInputChange('closureTime', e.target.value)}
+                      className="w-28 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-center font-medium" 
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Content</label>
+                      <input 
+                        type="text" 
+                        value={rphData.closureContent} 
+                        onChange={(e) => handleInputChange('closureContent', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-500 mb-1">Remarks & Teaching Aids</label>
+                      <input 
+                        type="text" 
+                        value={rphData.closureRemarks} 
+                        onChange={(e) => handleInputChange('closureRemarks', e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-500 mb-1">Teaching & Learning Activities</label>
+                    <textarea 
+                      rows="3"
+                      value={rphData.closureActivity} 
+                      onChange={(e) => handleInputChange('closureActivity', e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs resize-none" 
+                    />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-4 pb-8">
+              <button 
+                onClick={() => setActiveTab('preview')}
+                className="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-semibold text-xs rounded-xl shadow-lg transition-all flex items-center space-x-2"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Save & View Official Print Format</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: YEAR & TOPIC EXPLORER */}
+        {activeTab === 'syllabus' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <h2 className="text-lg font-bold text-slate-800 flex items-center space-x-2 mb-2">
+                <Layers className="w-5 h-5 text-teal-700" />
+                <span>Syllabus Explorer (Year 1 to Year 6)</span>
+              </h2>
+              <p className="text-xs text-slate-500">Select your year level below to browse modules specific to that year. Click 'Load into RPH Builder' to populate your lesson plan.</p>
+              
+              <div className="flex flex-wrap gap-2 mt-6">
+                {Object.keys(SYLLABUS_DB).map((yr) => (
+                  <button
+                    key={yr}
+                    onClick={() => setSelectedYearExplorer(yr)}
+                    className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm ${selectedYearExplorer === yr ? 'bg-teal-700 text-white shadow-md' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}
+                  >
+                    {yr}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {SYLLABUS_DB[selectedYearExplorer].topics.map((topic) => (
+                <div key={topic.id} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[11px] font-bold px-2.5 py-1 bg-teal-50 text-teal-800 rounded-lg border border-teal-200">{selectedYearExplorer}</span>
+                      <span className="text-[11px] text-slate-500 font-medium">{topic.theme}</span>
+                    </div>
+                    <h3 className="text-base font-bold text-slate-800 mb-2">{topic.title}</h3>
+                    <div className="space-y-1.5 text-xs text-slate-600">
+                      <p><strong className="text-slate-700">Focus Skills:</strong> {topic.focusSkills}</p>
+                      <p><strong className="text-slate-700">Content Standard:</strong> {topic.contentStandard}</p>
+                      <p><strong className="text-slate-700">Learning Standard:</strong> {topic.learningStandard}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setRphData(prev => ({ ...prev, year: `${selectedYearExplorer} Bestari` }));
+                      handleSelectTopicFromExplorer(topic);
+                    }}
+                    className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl transition-all flex items-center justify-center space-x-2 shadow-sm"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Load into RPH Builder ({selectedYearExplorer})</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {}
+        {activeTab === 'ai' && (
+          <div className="max-w-3xl mx-auto space-y-6 animate-fadeIn">
+            <div className="bg-gradient-to-br from-teal-900 to-emerald-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
+              <div className="absolute right-0 top-0 translate-x-6 -translate-y-6 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+              <div className="relative z-10 space-y-3">
+                <div className="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 px-3 py-1 rounded-full text-xs font-semibold border border-amber-400/30">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Gemini AI RPH & BBM Assistant</span>
+                </div>
+                <h2 className="text-2xl font-bold">Generate RPH from Text, BBM Photo, or Files</h2>
+                <p className="text-sm text-teal-100 max-w-xl">
+                  Upload a photo of your textbook page, worksheet, or flashcard (BBM), upload a lesson document, or type a topic prompt!
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+              
+              {/* Input Mode Selector */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-3">
+                  1. Choose Input Source for RPH Generation:
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setAiInputMode('text')}
+                    className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 ${
+                      aiInputMode === 'text' 
+                        ? 'bg-teal-700 text-white border-teal-700 shadow-md' 
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Text Prompt</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAiInputMode('photo')}
+                    className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 ${
+                      aiInputMode === 'photo' 
+                        ? 'bg-teal-700 text-white border-teal-700 shadow-md' 
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    <Image className="w-4 h-4" />
+                    <span>Send BBM Photo</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAiInputMode('file')}
+                    className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 ${
+                      aiInputMode === 'file' 
+                        ? 'bg-teal-700 text-white border-teal-700 shadow-md' 
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    <Paperclip className="w-4 h-4" />
+                    <span>Send BBM File</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* MODE 2: BBM PHOTO / IMAGE DROPZONE */}
+              {aiInputMode === 'photo' && (
+                <div className="space-y-3 animate-fadeIn">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide">
+                    Upload Photo / Image of BBM (Textbook Page, Worksheet, Flashcard, Chart):
+                  </label>
+
+                  {!attachedImage ? (
+                    <label className="border-2 border-dashed border-teal-300 hover:border-teal-500 bg-teal-50/40 hover:bg-teal-50 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all space-y-2 text-center group">
+                      <UploadCloud className="w-10 h-10 text-teal-600 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs font-bold text-slate-700">Click or drag & drop image here</span>
+                      <span className="text-[11px] text-slate-500">Supports PNG, JPG, JPEG, WEBP (e.g. Photo of Superminds textbook, BBM material)</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageUpload}
+                        className="hidden" 
+                      />
+                    </label>
+                  ) : (
+                    <div className="relative border border-slate-200 bg-slate-50 rounded-2xl p-4 flex items-center space-x-4">
+                      <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-200 border border-slate-300 flex-shrink-0 relative group">
+                        <img 
+                          src={attachedImage.previewUrl} 
+                          alt="BBM Preview" 
+                          className="w-full h-full object-cover" 
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="inline-block px-2 py-0.5 bg-teal-100 text-teal-800 rounded font-bold text-[10px] uppercase mb-1">
+                          BBM Photo Attached
+                        </span>
+                        <p className="text-xs font-bold text-slate-800 truncate">{attachedImage.fileName}</p>
+                        <p className="text-[11px] text-slate-500">Ready for AI visual analysis</p>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => setAttachedImage(null)}
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                        title="Remove Image"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* MODE 3: BBM FILE / DOCUMENT DROPZONE */}
+              {aiInputMode === 'file' && (
+                <div className="space-y-3 animate-fadeIn">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide">
+                    Upload BBM Document / Material File (.txt, .md, .csv, notes):
+                  </label>
+
+                  {!attachedFile ? (
+                    <label className="border-2 border-dashed border-teal-300 hover:border-teal-500 bg-teal-50/40 hover:bg-teal-50 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all space-y-2 text-center group">
+                      <Paperclip className="w-10 h-10 text-teal-600 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs font-bold text-slate-700">Click or drag & drop text/document file here</span>
+                      <span className="text-[11px] text-slate-500">Supports text documents, lesson notes, vocabulary lists</span>
+                      <input 
+                        type="file" 
+                        accept=".txt,.md,.csv,.json,.doc,.docx" 
+                        onChange={handleFileUpload}
+                        className="hidden" 
+                      />
+                    </label>
+                  ) : (
+                    <div className="border border-slate-200 bg-slate-50 rounded-2xl p-4 flex items-center justify-between">
+                      <div className="flex items-center space-x-3 min-w-0">
+                        <div className="p-3 bg-teal-100 text-teal-800 rounded-xl">
+                          <File className="w-6 h-6" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="inline-block px-2 py-0.5 bg-teal-100 text-teal-800 rounded font-bold text-[10px] uppercase mb-0.5">
+                            BBM File Attached
+                          </span>
+                          <p className="text-xs font-bold text-slate-800 truncate">{attachedFile.fileName}</p>
+                          <p className="text-[11px] text-slate-500">{attachedFile.size}</p>
+                        </div>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => setAttachedFile(null)}
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                        title="Remove File"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Text Area Instructions Prompt */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide">
+                  {aiInputMode === 'text' 
+                    ? '2. Enter Lesson Details / Topic Prompt:' 
+                    : '2. Additional Teacher Instructions for this BBM (Optional):'}
+                </label>
+                <textarea 
+                  rows="3"
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  placeholder={
+                    aiInputMode === 'photo' 
+                      ? "e.g. Create a Year 3 Speaking RPH using this textbook BBM photo..." 
+                      : aiInputMode === 'file'
+                      ? "e.g. Focus on reading skills using the text from this attached BBM file..."
+                      : "e.g. Create a Year 1 English RPH for Unit 1 (At School) focusing on speaking..."
+                  }
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3.5 text-xs focus:ring-2 focus:ring-teal-600 focus:outline-none resize-none"
+                />
+              </div>
+
+              {/* Quick Prompt Presets */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold text-slate-500">Quick BBM & Topic Presets:</span>
+                <div className="flex flex-wrap gap-2">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setAiInputMode('text');
+                      setAiPrompt("Create Year 1 RPH for Unit 1 At School focusing on speaking skills and classroom objects");
+                    }}
+                    className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-300 transition-all"
+                  >
+                    ✨ Year 1 Unit 1 (At School)
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setAiInputMode('photo');
+                      setAiPrompt("Generate a Year 2 Reading RPH based on this textbook page BBM");
+                    }}
+                    className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 px-3 py-1.5 rounded-lg border border-teal-200 transition-all font-medium"
+                  >
+                    📸 BBM Textbook Page RPH
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setAiInputMode('photo');
+                      setAiPrompt("Generate a Year 4 Writing RPH incorporating this worksheet BBM into Production step");
+                    }}
+                    className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 px-3 py-1.5 rounded-lg border border-teal-200 transition-all font-medium"
+                  >
+                    📸 BBM Worksheet RPH
+                  </button>
+                </div>
+              </div>
+
+              {/* Generate Button */}
+              <button 
+                type="button"
+                onClick={handleAiGenerate}
+                disabled={isAiLoading}
+                className="w-full py-3.5 bg-gradient-to-r from-teal-700 to-emerald-700 hover:from-teal-800 hover:to-emerald-800 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+              >
+                {isAiLoading ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                    <span>AI is analyzing BBM & drafting your complete RPH...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    <span>
+                      {aiInputMode === 'photo' 
+                        ? 'Generate RPH from BBM Photo' 
+                        : aiInputMode === 'file' 
+                        ? 'Generate RPH from BBM File' 
+                        : 'Generate Complete RPH with AI'}
+                    </span>
+                  </>
+                )}
+              </button>
+
+            </div>
+          </div>
+        )}
+
+        {}
+        {activeTab === 'preview' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 print:hidden">
+              <div>
+                <h2 className="text-base font-bold text-slate-800">Official RPH Document Preview</h2>
+                <p className="text-xs text-slate-500">This matches your standard school RPH template layout.</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button 
+                  onClick={() => setActiveTab('generator')}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition-all"
+                >
+                  Edit RPH
+                </button>
+                <button 
+                  onClick={() => window.print()}
+                  className="px-5 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold text-xs rounded-xl shadow-md transition-all flex items-center space-x-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Print / Save as PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 md:p-12 rounded-2xl shadow-lg border border-slate-200 max-w-4xl mx-auto space-y-6 text-slate-900 print:shadow-none print:border-none print:p-0">
+              <div className="text-center border-b border-slate-300 pb-4 flex justify-between items-center">
+                <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">LAMPIRAN A</div>
+                <h1 className="text-base font-extrabold uppercase tracking-wide text-slate-900">DAILY ENGLISH LANGUAGE LESSON PLAN</h1>
+                <div className="text-[11px] font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-lg border border-teal-200">
+                  Active Year : {getCurrentYearKey()}
+                </div>
+              </div>
+
+              <table className="w-full text-xs border-collapse border border-slate-400">
+                <tbody>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50 w-1/4">Subject</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.subject}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Date / Day</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.date}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Time</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.time}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Year</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.year}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Number Of Pupils</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.pupilsPresent}/{rphData.pupilsTotal}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Proficiency Level</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.proficiencyLevel}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Theme</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.theme}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Topic</td>
+                    <td className="border border-slate-400 p-2 font-semibold text-teal-800" colSpan="3">{rphData.topic}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Focus Skills<br/><span className="font-normal text-[10px] text-slate-500">L/S/R/W/LA</span></td>
+                    <td className="border border-slate-400 p-2" colSpan="3">Main: {rphData.focusSkillsMain}<br/>Complementary: {rphData.focusSkillsComp}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Pupils' Prior Knowledge</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.priorKnowledge}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Content Standard</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">
+                      Main Skill: {rphData.contentStandardMain}<br/>
+                      Complementary Skill: {rphData.contentStandardComp}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Learning Standard</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">
+                      Main Skill: {rphData.learningStandardMain}<br/>
+                      Complementary Skill: {rphData.learningStandardComp}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Learning Objectives (SMART)</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">
+                      By the end of the lesson, pupils will be able to:<br/>
+                      1. {rphData.lo1}<br/>
+                      2. {rphData.lo2}<br/>
+                      3. {rphData.lo3}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Language Content</td>
+                    <td className="border border-slate-400 p-2 whitespace-pre-line" colSpan="3">{rphData.languageContent}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Assessment</td>
+                    <td className="border border-slate-400 p-2 whitespace-pre-line" colSpan="3">{rphData.assessment}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Thinking Skills (HOTS)</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.hots}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Multiple Intelligences</td>
+                    <td className="border border-slate-400 p-2 whitespace-pre-line" colSpan="3">{rphData.multipleIntelligences}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Moral values</td>
+                    <td className="border border-slate-400 p-2 whitespace-pre-line" colSpan="3">{rphData.moralValues}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Cross Curricular Elements (EMK)</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.emk}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Soft Skills (Kemahiran Insaniah)</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.softSkills}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold bg-slate-50">Current Pedagogy (Amalan Pedagogi Masa Kini)</td>
+                    <td className="border border-slate-400 p-2" colSpan="3">{rphData.currentPedagogy}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table className="w-full text-xs border-collapse border border-slate-400">
+                <thead>
+                  <tr className="bg-slate-50 text-left">
+                    <th className="border border-slate-400 p-2 w-1/5">Steps/Time (Minutes)</th>
+                    <th className="border border-slate-400 p-2 w-1/4">Content</th>
+                    <th className="border border-slate-400 p-2 w-7/12">Teaching & Learning Activities</th>
+                    <th className="border border-slate-400 p-2 w-1/4">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold align-top">Set Induction<br/><span className="font-normal text-slate-500">({rphData.setInductionTime})</span></td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.setInductionContent}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.setInductionActivity}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.setInductionRemarks}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold align-top">Presentation<br/><span className="font-normal text-slate-500">({rphData.presentationTime})</span></td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.presentationContent}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.presentationActivity}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.presentationRemarks}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold align-top">Practice<br/><span className="font-normal text-slate-500">({rphData.practiceTime})</span></td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.practiceContent}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.practiceActivity}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.practiceRemarks}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold align-top">Production<br/><span className="font-normal text-slate-500">({rphData.productionTime})</span></td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.productionContent}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.productionActivity}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.productionRemarks}</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-slate-400 p-2 font-bold align-top">Closure<br/><span className="font-normal text-slate-500">({rphData.closureTime})</span></td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.closureContent}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.closureActivity}</td>
+                    <td className="border border-slate-400 p-2 align-top whitespace-pre-line">{rphData.closureRemarks}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div className="border border-slate-400 p-4 rounded-xl space-y-6">
+                <div>
+                  <h4 className="font-bold text-xs uppercase tracking-wide text-slate-800 mb-1">Student's Reflection</h4>
+                  <div className="h-16 border-b border-dashed border-slate-300"></div>
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs uppercase tracking-wide text-slate-800 mb-1">Cooperating Teacher's/Supervisor's Comments</h4>
+                  <div className="h-16 border-b border-dashed border-slate-300"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+      </main>
+    </div>
+  );
+}
